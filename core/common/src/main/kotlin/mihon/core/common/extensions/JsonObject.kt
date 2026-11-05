@@ -12,4 +12,8 @@ val JsonObject.Companion.EMPTY: JsonObject
 
 fun JsonObject.toByteArray(): ByteArray = toString().encodeToByteArray()
 
-fun ByteArray.toJsonObject(): JsonObject = Json.decodeFromString<JsonObject>(decodeToString())
+// Backups from forks such as Yokai can carry a zero-length memo, which is not valid JSON.
+fun ByteArray.toJsonObject(): JsonObject {
+    val text = decodeToString()
+    return if (text.isBlank()) JsonObjectEmpty else Json.decodeFromString<JsonObject>(text)
+}
